@@ -1,8 +1,8 @@
-defmodule PancakeMetricsReporterTest do
+defmodule MetricsCakeTest do
   use ExUnit.Case
-  doctest PancakeMetricsReporter
+  doctest MetricsCake
 
   test "greets the world" do
-    assert PancakeMetricsReporter.hello() == :world
+    assert MetricsCake.hello() == :world
   end
 end

@@ -1,4 +1,4 @@
-defmodule PancakeMetricsReporter.MixProject do
+defmodule MetricsCake.MixProject do
   use Mix.Project
 
   def project do
@@ -14,15 +14,17 @@ defmodule PancakeMetricsReporter.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      applications: [:telemetry_metrics]
+      extra_applications: [:logger]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:telemetry_metrics, "~> 0.6"}
+      {:telemetry_metrics, "~> 0.6"},
+      {:plug, "~> 1.10"},
+      {:plug_cowboy, "~> 2.0"},
+      {:jason, "~> 1.3"}
     ]
   end
 end

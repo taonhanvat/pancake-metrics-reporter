@@ -1,16 +1,20 @@
 defmodule MetricsCake do
   use GenServer
+  alias MetricsCake.TDigest
 
   @summary_metrics [:median, :p95, :p99]
   @summary_buffer_size 1_000
   @summary_retain_window 30 * 60 * 1_000 # 30 mins
 
-  def start_link(metrics) do
-    metrics = Enum.map(metrics, &expand_reporter_options/1)
-    GenServer.start_link(__MODULE__, metrics, name: __MODULE__)
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def init(metrics) do
+  def init(opts) do
+    metrics =
+      Keyword.get(opts, :metrics, [])
+      |> Enum.map(&expand_reporter_options/1)
+
     :ets.new(:metrics_reporter_utils, [:set, :named_table, :public])
     groups = Enum.group_by(metrics, & &1.event_name)
 
@@ -20,13 +24,13 @@ defmodule MetricsCake do
       Enum.each(metrics, &init_metric/1)
     end
 
-    adapter = start_prometheus_adapter()
-    {:ok, %{metrics: metrics, adapter: adapter}}
+    adapter = start_prometheus_adapter(opts)
+    {:ok, %{metrics: metrics, adapter: adapter, opts: opts}}
   end
 
   def terminate(_, %{metrics: metrics}) do
     groups = Enum.group_by(metrics, & &1.event_name)
-    for {event, metrics} <- groups do
+    for {event, _metrics} <- groups do
       id = {__MODULE__, event, self()}
       :telemetry.detach(id)
     end
@@ -49,8 +53,8 @@ defmodule MetricsCake do
     {:noreply, state}
   end
 
-  def handle_info({:DOWN, _ref, :process, pid, reason}, %{adapter: pid} = state) do
-    adapter = start_prometheus_adapter()
+  def handle_info({:DOWN, _ref, :process, pid, _reason}, %{adapter: pid} = state) do
+    adapter = start_prometheus_adapter(state.opts)
     {:noreply, %{state | adapter: adapter}}
   end
 
@@ -76,9 +80,9 @@ defmodule MetricsCake do
     end)
   end
 
-  defp start_prometheus_adapter do
+  defp start_prometheus_adapter(opts) do
     adapter =
-      case __MODULE__.PrometheusAdapter.start() do
+      case __MODULE__.PrometheusAdapter.start(opts) do
         {:ok, pid} -> pid
         {:error, {:already_started, pid}} -> pid
       end
@@ -112,7 +116,7 @@ defmodule MetricsCake do
     :counters.add(counter, 1, 1)
   end
 
-  defp update_metric(%Telemetry.Metrics.Summary{} = metric, measurement, metadata)
+  defp update_metric(%Telemetry.Metrics.Summary{} = metric, measurement, _metadata)
     when measurement != nil
   do
     [{_, t_digest, buffer, _}] = :ets.lookup(:metrics_reporter_utils, ets_key(metric))

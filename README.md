@@ -1,4 +1,4 @@
-# PancakeMetricsReporter
+# MetricsCake
 
 **TODO: Add description**
 
