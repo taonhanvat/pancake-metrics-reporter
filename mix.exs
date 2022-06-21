@@ -22,9 +22,9 @@ defmodule MetricsCake.MixProject do
   defp deps do
     [
       {:telemetry_metrics, "~> 0.6"},
-      {:plug, "~> 1.10"},
+      {:plug, "~> 1.6"},
       {:plug_cowboy, "~> 2.0"},
-      {:jason, "~> 1.3"}
+      {:jason, "~> 1.0"}
     ]
   end
 end
