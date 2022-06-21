@@ -5,7 +5,7 @@ defmodule MetricsCake.MixProject do
     [
       app: :pancake_metrics_reporter,
       version: "0.1.0",
-      elixir: "~> 1.8",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -23,7 +23,7 @@ defmodule MetricsCake.MixProject do
     [
       {:telemetry_metrics, "~> 0.6"},
       {:plug, "~> 1.6"},
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:jason, "~> 1.0"}
     ]
   end
