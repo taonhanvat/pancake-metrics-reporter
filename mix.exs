@@ -24,6 +24,7 @@ defmodule MetricsCake.MixProject do
       {:telemetry_metrics, "~> 0.5.0"},
       {:plug, "~> 1.6"},
       {:plug_cowboy, "~> 1.0"},
+      {:plug_crypto, "~> 1.1.2"},
       {:jason, "~> 1.0"}
     ]
   end
