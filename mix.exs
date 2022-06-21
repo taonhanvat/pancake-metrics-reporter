@@ -21,9 +21,9 @@ defmodule MetricsCake.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:telemetry_metrics, "~> 0.5"},
+      {:telemetry_metrics, "~> 0.5.0"},
       {:plug, "~> 1.6"},
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:jason, "~> 1.0"}
     ]
   end
