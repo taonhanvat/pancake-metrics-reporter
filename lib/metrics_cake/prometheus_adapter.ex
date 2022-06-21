@@ -18,7 +18,7 @@ defmodule MetricsCake.PrometheusAdapter do
   def start(opts) do
     report_callback = Keyword.get(opts, :report_callback, fn -> [] end)
     built_in_metrics = Keyword.get(opts, :built_in_metrics, [:cpu, :memory, :network])
-    adapter_port = Keyword.get(opts, :adapter_port, 4001)
+    adapter_port = Keyword.get(opts, :adapter_port, 4002)
     :persistent_term.put(:report_callback, report_callback)
     :persistent_term.put(:built_in_metrics, built_in_metrics)
     Plug.Cowboy.http(__MODULE__, [], port: adapter_port)
